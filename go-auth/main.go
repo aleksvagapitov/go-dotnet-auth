@@ -7,27 +7,40 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
-var secretkey string = "JWTAuthenticationHIGHsecuredPasswordVVVp1OH7Xzyr"
+type Config struct {
+	JWT struct {
+		Secret   string `yaml:"secret" env:"SECRET"`
+		Issuer   string `yaml:"issuer" env:"ISSUER"`
+		Audience string `yaml:"audience" env:"AUDIENCE"`
+	}
+}
 
 func main() {
+	var cfg Config
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Panic("Error Reading Config: ", err)
+	}
+
 	userId := uuid.New()
-	token, err := GenerateJWT(userId, "Administrator")
+	token, err := GenerateJWT(cfg.JWT.Secret, cfg.JWT.Issuer, cfg.JWT.Audience, userId, "Administrator")
 	if err != nil {
 		log.Panic(err)
 	}
 	fmt.Println(token)
 }
 
-func GenerateJWT(userId uuid.UUID, role string) (string, error) {
-	var mySigningKey = []byte(secretkey)
+func GenerateJWT(secret string, issuer string, audience string, userId uuid.UUID, role string) (string, error) {
+	var mySigningKey = []byte(secret)
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims["iss"] = "http://go-auth"
-	claims["aud"] = "http://dotnet-auth"
+	claims["iss"] = issuer
+	claims["aud"] = audience
 	claims["usedid"] = userId
 	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()

@@ -1,7 +1,8 @@
+using DotnetAuth.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace dotnet_auth.Controllers;
+namespace DotnetAuth.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,0 +1,4 @@
+jwt:
+  secret: "JWTAuthenticationSuperSecretKey"
+  issuer: "http://go-auth"
+  audience: "http://dotnet-auth"

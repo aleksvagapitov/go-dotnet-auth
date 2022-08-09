@@ -1,4 +1,4 @@
-namespace dotnet_auth;
+namespace DotnetAuth.Domain;
 
 public class WeatherForecast
 {
